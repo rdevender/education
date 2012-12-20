@@ -1,0 +1,285 @@
+<html>
+<head>
+<style>
+.Large
+{
+    font-size: 50pt;
+    height: 100px;
+    align="center";
+}
+.resizedTextbox {width: 100px; height: 100px}
+input[type="text"] {
+    width: 100px;
+    align="center";
+}
+</style>
+
+  <script language="JavaScript" type="text/javascript" src="jquery.js"></script>
+	<script language="JavaScript" type="text/javascript" src="JSCounter.js"></script>
+<script type="text/javascript">
+
+var minNum=0;
+var maxNum=11;
+/**
+ * Returns a random integer between min and max
+ * Using Math.round() will give you a non-uniform distribution!
+ */
+function getRandomInt (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function doEasy(){
+clearVal();
+minNum=0;
+maxNum=11;
+initValues('1');
+}
+function doMedium(){
+clearVal();
+minNum=10;
+maxNum=21;
+initValues('2');
+}
+function doHard(){
+clearVal();
+minNum=10;
+maxNum=100;
+initValues('3');
+}
+
+function addNum(){
+
+if(document.math_form.add.value==""){
+
+return false
+}else{
+var frm=document.math_form;
+a=new Number(frm.val1.value);
+b=new Number(frm.val2.value);
+addVal=new Number(frm.add.value);
+
+tot=a+b;
+if(addVal==tot){
+addCount('Y');
+}else{
+addCount('N');
+}
+//frm.substract.value=a-b;
+frm.val1.value=getRandomInt(minNum,maxNum)
+frm.val2.value=getRandomInt(minNum,maxNum)
+frm.add.value="";
+}
+}
+
+function addCount(corrInd){
+	var frm=document.math_form;
+	levelInd=frm.levelInd.value;
+	if(corrInd=="Y"){
+		if(levelInd=="1"){
+			c=new Number(frm.easyCorrect.value);
+			frm.easyCorrect.value=c+1;
+		}else if(levelInd=="2"){
+			c=new Number(frm.mediumCorrect.value);
+			frm.mediumCorrect.value=c+1;
+		}else{
+			c=new Number(frm.hardCorrect.value);
+			frm.hardCorrect.value=c+1;
+		}
+	}else{
+
+		if(levelInd=="1"){
+			c=new Number(frm.easyInCorrect.value);
+			frm.easyInCorrect.value=c+1;
+		}else if(levelInd=="2"){
+			c=new Number(frm.mediumInCorrect.value);
+			frm.mediumInCorrect.value=c+1;
+		}else{
+			c=new Number(frm.hardInCorrect.value);
+			frm.hardInCorrect.value=c+1;
+		}
+	}
+
+}
+
+function initValues(levelInd){
+var frm=document.math_form;
+frm.val1.value=getRandomInt(minNum,maxNum)
+frm.val2.value=getRandomInt(minNum,maxNum)
+
+//frm.easyCorrect.value="0";
+//frm.easyInCorrect.value="0";
+frm.levelInd.value=levelInd
+checkCookie();
+//CreateTimer("subTimer", 0);
+}
+
+function clearVal(){
+document.math_form.add.value="";
+
+}
+var Timer;
+var TotalSeconds;
+
+
+function CreateTimer(TimerID, Time) {
+        Timer = document.getElementById(TimerID);
+        TotalSeconds = Time;
+
+        UpdateTimer()
+        window.setTimeout("Tick()", 1000);
+}
+
+function Tick() {
+        TotalSeconds += 1;
+        UpdateTimer()
+        window.setTimeout("Tick()", 1000);
+}
+
+function UpdateTimer() {
+        var Seconds = TotalSeconds;
+
+        var Days = Math.floor(Seconds / 86400);
+        Seconds += Days * 86400;
+
+        var Hours = Math.floor(Seconds / 3600);
+        Seconds += Hours * (3600);
+		Hours %=24;
+        var Minutes = Math.floor(Seconds / 60);
+        Minutes %=60;
+        Seconds %= 60;
+
+        var TimeStr = ((Days > 0) ? Days + " days " : "") + LeadingZero(Hours) + ":" + LeadingZero(Minutes) + ":" + LeadingZero(Seconds)
+
+
+        Timer.innerHTML = TimeStr;
+}
+
+
+function LeadingZero(Time) {
+
+        return (Time < 10) ? "0" + Time : + Time;
+
+}
+
+function getCookie(c_name)
+{
+alert(document.cookie);
+var i,x,y,ARRcookies=document.cookie.split(";");
+for (i=0;i<ARRcookies.length;i++)
+  {
+  x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+  y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+  x=x.replace(/^\s+|\s+$/g,"");
+  if (x==c_name)
+    {
+    return unescape(y);
+    }
+  }
+}
+
+function setCookie(c_name,value,exdays)
+{
+var exdate=new Date();
+exdate.setDate(exdate.getDate() + exdays);
+var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+document.cookie=c_name + "=" + c_value;
+}
+
+function checkCookie()
+{
+
+
+var currentdate = new Date();
+var day=currentdate.getDate();
+var month=currentdate.getMonth()+1;
+var year=currentdate.getFullYear()
+var cname="Add-"+month+day+year;
+
+var username=getCookie(cname);
+if (username!=null && username!="")
+  {
+  alert("Welcome again " + username);
+  }
+else
+  {
+  username=prompt("Please enter your name:","");
+  if (username!=null && username!="")
+    {
+    setCookie(cname,username,365);
+    }
+  }
+}
+
+</script>
+
+</head>
+<body onLoad="initValues('1')">
+<form name="math_form" action="">
+<input type="hidden" name="levelInd" value="1"/>
+<table align="center" cellspacing="1" cellpadding="1" border="0" >
+
+<tr><td class="Large" colspan="2"><b>Addition</b></td><td class="Large" align="left">
+			<div id="addTimer"></div>
+		</td><td class="Large"><a href="javascript: void(0)"
+   onclick="window.open('MathWorkout.htm',
+  'MathWorkout',
+  'width=1600, \
+   height=1200, \
+   directories=no, \
+   location=no, \
+   menubar=no, \
+   resizable=no, \
+   scrollbars=1, \
+   status=no, \
+   toolbar=no');
+  return false;"><font color="green"><b>Menu</b></font></a></td></tr>
+<tr></tr>
+<tr></tr>
+<tr></tr>
+<tr><td class="Large"><input type="button" class="Large" value="Easy" onClick="doEasy()"/></td><td class="Large"><input type="button" class="Large" value="Medium" onClick="doMedium()"/>&nbsp;&nbsp;</td><td class="Large"><input type="button" class="Large" value="Hard" onClick="doHard()"/></td></tr>
+<tr></tr>
+<tr></tr>
+<tr></tr>
+</table>
+<br>
+<br>
+<table align="center" cellspacing="1" cellpadding="1" border="0" >
+
+<tr></tr>
+<tr></tr>
+<tr></tr>
+<tr></tr>
+<tr><td class="Large"><input type="text" class="Large" name="val1" readonly/>&nbsp;&nbsp;<font color="green"><b>+</b></font>&nbsp;&nbsp;<input type="text" class="Large" name="val2"  readonly/>&nbsp;&nbsp;<font color="green"><b>=</b></font>&nbsp;&nbsp;<input type="text" class="Large" name="add" onfocus="clearVal()"/>&nbsp;&nbsp;<input type="button" class="Large" value="Add" onclick="addNum()"/></td></tr>
+<tr></tr>
+</table>
+<br>
+<br>
+<table align="center" cellspacing="1" cellpadding="1" border="0" >
+<tr><td class="Large">Easy</td><td><img src="tick.jpg" alt="Correct" width="100" height="50"/><input type="text" class="Large" name="easyCorrect"  value="0" readonly/></td><td><img src="xmark.jpg" alt="InCorrect" width="100" height="50"/><input type="text" class="Large" name="easyInCorrect" value="0" readonly/></td></tr>
+
+</table>
+
+
+<br>
+<br>
+<table align="center" cellspacing="1" cellpadding="1" border="0" >
+<tr><td class="Large">Medium</td><td><img src="tick.jpg" alt="Correct" width="100" height="50"><input type="text" class="Large" name="mediumCorrect"  value="0" readonly/></td><td><img src="xmark.jpg" alt="InCorrect" width="100" height="50"><input type="text" class="Large" name="mediumInCorrect" value="0" readonly/></td></tr>
+
+</table>
+<br>
+<br>
+<table align="center" cellspacing="1" cellpadding="1" border="0" >
+<tr><td class="Large">Hard</td><td><img src="tick.jpg" alt="Correct" width="100" height="50"><input type="text" class="Large" name="hardCorrect"  value="0" readonly/></td><td><img src="xmark.jpg" alt="InCorrect" width="100" height="50"><input type="text" class="Large" name="hardInCorrect" value="0" readonly/></td></tr>
+
+</table>
+</form>
+
+
+<script>
+CreateTimer("addTimer", 0);
+</script>
+</body>
+
+
+
+</html>
